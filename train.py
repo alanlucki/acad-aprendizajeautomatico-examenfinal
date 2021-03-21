@@ -29,7 +29,7 @@ def segmentFile(samples,fileName):
     - ##_###_{segmento}.wav
     '''
     duration = 0
-    transformMpegToWav(pathSrc + filename)
+    #transformMpegToWav(pathSrc + fileName)
     origen = pathSrc + fileName +'.wav'
 
     with contextlib.closing(wave.open(origen,'r')) as f:
@@ -39,17 +39,9 @@ def segmentFile(samples,fileName):
     for i in range(0, samples):        
         destino = pathSrc + fileName + '/' + fileName +'_'+ '{0}'.format(str(i + 1).zfill(3))
         print(destino)
-        tiempo_inici = i * (duration/samples)
-        str_inci = ''
-        if int(tiempo_inici) <= 10:
-            str_inci = '0' + str(int(tiempo_inici))
-        else:
-            str_inci = str(int(tiempo_inici))
-        str_duracion = ""
-        if int((duration/samples)) > 9:
-            str_duracion = str(int((duration/samples)))
-        else:
-            str_duracion = '0' + str(int((duration/samples)))    
-        os.system(str('ffmpeg -ss 00:00:' + str_inci +' -t 00:00:' + str_duracion + ' -i {} -acodec pcm_s16le -ar 44000 {}.wav').format(origen,destino) )
+        str_inci =  time.strftime('%H:%M:%S', time.gmtime(int(i * (duration/samples))))
+        str_duracion =  time.strftime('%H:%M:%S', time.gmtime(int(duration/samples)))
+
+        os.system(str('ffmpeg -ss {} -t {} -i {} -acodec pcm_s16le -ar 44000 {}.wav').format(str_inci,str_duracion,origen,destino) )
         
-segmentFile(360,'rpp_01') 
+segmentFile(720,'rpp_01') 
